@@ -1,12 +1,12 @@
 # NestJS Caching Module
 
-Un módulo de caché configurable para NestJS que soporta almacenamiento en memoria (usando LRU Cache) y Redis (usando ioredis).
+Un módulo de caché configurable para NestJS que soporta almacenamiento en memoria (usando LRU Cache) y Redis (usando ioredis), con soporte opcional de logging para monitoreo y debugging.
 
 ## Instalación
 
 ```bash
 npm install nestjs-caching-module
-```
+````
 
 ## Configuración
 
@@ -34,11 +34,13 @@ import { CachingModule } from 'nestjs-caching-module';
   imports: [
     CachingModule.forRoot({
       store: 'redis',
-      redisOptions: {
+      standaloneOptions: {
         host: 'localhost',
         port: 6379,
         // otras opciones de ioredis
       },
+      // Opcionalmente, clusterNodes si usas Redis Cluster
+      // clusterNodes: [{ host: 'localhost', port: 7000 }],
     }),
   ],
 })
@@ -133,15 +135,15 @@ export class YourService {
 
 ### CacheModuleService
 
-- `get<T>(key: string): Promise<T | undefined>`
-- `set<T>(key: string, value: T, ttlSeconds?: number): Promise<void>`
-- `del(key: string): Promise<void>`
+* `get<T>(key: string): Promise<T | undefined>`
+* `set<T>(key: string, value: T, ttlSeconds?: number): Promise<void>`
+* `del(key: string): Promise<void>`
 
 ### CachedRepository
 
-- `findById(id: K): Promise<T | null>`
-- `save(entity: T & { id: K }): Promise<T>`
-- `delete(id: K): Promise<void>`
+* `findById(id: K): Promise<T | null>`
+* `save(entity: T & { id: K }): Promise<T>`
+* `delete(id: K): Promise<void>`
 
 ## Opciones de Configuración
 
@@ -149,16 +151,38 @@ export class YourService {
 
 Todas las opciones de [ioredis](https://github.com/luin/ioredis#connect-to-redis) son soportadas.
 
+También puedes definir un arreglo `clusterNodes` si deseas usar Redis en modo cluster.
+
 ### Memory Options
 
 Opciones de [lru-cache](https://github.com/isaacs/node-lru-cache#options):
 
-- `max`: número máximo de items
-- `ttl`: tiempo de vida en milisegundos
-- `maxSize`: tamaño máximo en bytes
-- `allowStale`: permitir items expirados
-- `updateAgeOnGet`: actualizar edad al obtener
-- `updateAgeOnHas`: actualizar edad al verificar existencia
+* `max`: número máximo de items
+* `ttl`: tiempo de vida en milisegundos
+* `maxSize`: tamaño máximo en bytes
+* `allowStale`: permitir items expirados
+* `updateAgeOnGet`: actualizar edad al obtener
+* `updateAgeOnHas`: actualizar edad al verificar existencia
+
+## Logging (Opcional)
+
+Para habilitar logs automáticos en consola de cada operación de `get`, `set` y `del`:
+
+1. Establece la variable de entorno `CACHE_LOGS=true`
+2. Asegúrate de que tu entorno de NestJS tenga habilitado el nivel de log `debug`
+
+Ejemplo:
+
+```bash
+CACHE_LOGS=true npm run start:dev
+```
+
+Los logs utilizan el `Logger` de NestJS e incluyen:
+
+* `GET key`: cuando se intenta obtener un valor
+* `SET key`: al guardar un valor
+* `DEL key`: al eliminar una key
+* Eventos de conexión, errores y reconexión en Redis
 
 ## Contribuir
 

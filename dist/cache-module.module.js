@@ -31,9 +31,9 @@ let CachingModule = CachingModule_1 = class CachingModule {
         };
     }
 };
-exports.CachingModule = CachingModule;
-exports.CachingModule = CachingModule = CachingModule_1 = __decorate([
+CachingModule = CachingModule_1 = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({})
 ], CachingModule);
+exports.CachingModule = CachingModule;
 //# sourceMappingURL=cache-module.module.js.map

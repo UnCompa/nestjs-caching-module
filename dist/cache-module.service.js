@@ -29,10 +29,10 @@ let CacheModuleService = class CacheModuleService {
         return this.cache.del(key);
     }
 };
-exports.CacheModuleService = CacheModuleService;
-exports.CacheModuleService = CacheModuleService = __decorate([
+CacheModuleService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, common_1.Inject)(cache_repository_1.CACHE_CLIENT)),
     __metadata("design:paramtypes", [Object])
 ], CacheModuleService);
+exports.CacheModuleService = CacheModuleService;
 //# sourceMappingURL=cache-module.service.js.map
