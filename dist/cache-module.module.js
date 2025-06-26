@@ -19,7 +19,7 @@ let CachingModule = CachingModule_1 = class CachingModule {
             provide: cache_repository_1.CACHE_CLIENT,
             useFactory: () => {
                 if (options.store === 'redis') {
-                    return new redis_cache_client_1.RedisCacheClient(options.redisOptions);
+                    return new redis_cache_client_1.RedisCacheClient(options.standaloneOptions, options.clusterNodes, options.clusterOptions);
                 }
                 return new memory_cache_client_1.MemoryCacheClient(options.memoryOptions);
             },

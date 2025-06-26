@@ -1,13 +1,17 @@
 import { DynamicModule, Global, Module } from '@nestjs/common';
+import { ClusterOptions, RedisOptions } from 'ioredis';
 import { CacheModuleService } from './cache-module.service';
 import { CACHE_CLIENT } from './repository/cache.repository';
 import { MemoryCacheClient } from './repository/memory-cache.client';
 import { RedisCacheClient } from './repository/redis-cache.client';
 
+
 export interface CacheModuleOptions {
   store: 'memory' | 'redis';
   memoryOptions?: ConstructorParameters<typeof MemoryCacheClient>[0];
-  redisOptions?: ConstructorParameters<typeof RedisCacheClient>[0];
+  standaloneOptions?: RedisOptions;
+  clusterNodes?: { host: string; port: number; password?: string }[];
+  clusterOptions?: ClusterOptions;
 }
 
 @Global()
@@ -18,7 +22,11 @@ export class CachingModule {
       provide: CACHE_CLIENT,
       useFactory: () => {
         if (options.store === 'redis') {
-          return new RedisCacheClient(options.redisOptions);
+          return new RedisCacheClient(
+            options.standaloneOptions,
+            options.clusterNodes,
+            options.clusterOptions
+          );
         }
         return new MemoryCacheClient(options.memoryOptions);
       },
